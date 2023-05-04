@@ -2,7 +2,7 @@
 CC=g++
 
 # Options en mode optimisé - La variable DEBUG est définie comme fausse
-OPTIM_FLAG = -O3 -DNDEBUG -std=c++11
+OPTIM_FLAG = -O3 -std=c++11
 # Options en mode debug - La variable est DEBUG est définie comme vraie
 DEBUG_FLAG = -g -DDEBUG -std=c++11
 

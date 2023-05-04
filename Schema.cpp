@@ -32,7 +32,7 @@ void Schema::Update()
 	_t += _dt;
 	_b = _Tn;
     this->Build_A_and_b();
-	_algo->Initialize(this->GetA(), _b, _Tn, pow(10, -10));
+	_algo->Initialize(this->GetA(), _b, _Tn, pow(10, -5));
     _algo->BuildX();
 	_Tn = _algo->GetX();
 	cout << int(_t/_df->GetTmax()*100) << "%" << endl;
@@ -53,7 +53,7 @@ void Schema::Build_A_and_b()
 			// Tij en n+1
 			_triplets.push_back({Coord_mat_to_vect(i, j), Coord_mat_to_vect(i, j), 1});
 			// Flux F en i
-			this->Flux_F(i, j, C / (_df->GetDeltaX() * _df->GetDeltaX()), neu);
+			this->Flux_F(i, j, C / (_df->GetDeltaX() * _df->GetDeltaX()), diri);
 			// Flux G en j
 			this->Flux_G(i, j, C / (_df->GetDeltaY() * _df->GetDeltaY()), diri);
 		}

@@ -42,7 +42,8 @@ double Datafile::Lambda_harm(double Tplus, double Tmoins)
 // Definition de lambda(T)
 double Datafile::Lambda(double T)
 {
-    return 1. + 2.*T;
+    // return 1. + 2.*T;
+    return 1.;
 }
 
 // Definition de T ouest(t)
@@ -113,7 +114,10 @@ double Datafile::SolExact(double t, double x, double y)
     // return 1.-y;
 
     // Validation de lambda(T(x)) non constant
-    return -1./2. + sqrt(1+8*y)/2.;
+    // return -1./2. + sqrt(1+8*y)/2.;
+
+    // Validation code 2D
+    return sin(2*pi*x)*sin(2*pi*y)*exp(4*Lambda(0)*pi*pi*t);
 }
 
 double Datafile::Source_term(double T)
