@@ -13,7 +13,7 @@ CXX_FLAGS = $(OPTIM_FLAG)
 PROG = run
 
 # Les fichiers source à compiler
-SRC = main.cc Algo.cpp Schema.cpp Datafile.cpp
+SRC = main.cc mod_algo.cpp mod_schema.cpp mod_datafile.cpp mod_display.cpp
 
 # La commande complète : compile seulement si un fichier a été modifié
 $(PROG) : $(SRC)
