@@ -124,7 +124,6 @@ void Gradient_Conjugue::BuildX()
         beta = r.norm();
         r += -alpha*z;
         _k += 1;
-        cout << (_b - _A*_x).norm() << endl;
     }
     if (_k > _kmax)
     {

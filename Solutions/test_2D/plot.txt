@@ -1,0 +1,8 @@
+# Définition de l'échelle constante pour les axes
+set autoscale fix
+
+file_name_exact = sprintf("exact_2D/exact_2D_0.200.dat")
+file_name_valid = sprintf("validation_2D/valid_2D_0.200.dat")
+set title "t = 0.200s"
+plot file_name_exact u 1:3 w lp, file_name_valid u 1:3 w lp
+pause 10

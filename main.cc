@@ -22,7 +22,7 @@ int main()
     Schema* schema(0);
     Algo* algo(0);
 
-    algo = new Gradient_Optimal(1000);
+    algo = new Gradient_Conjugue(1000);
     df = new Datafile();
     schema = new Schema(df, algo);
 

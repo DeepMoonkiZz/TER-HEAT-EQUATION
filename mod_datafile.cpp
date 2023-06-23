@@ -36,7 +36,7 @@ double Datafile::Cp(double Temp)
 // Definition de lambda(T)
 double Datafile::Lambda(double T)
 {
-    // Cas test 1D et 2D
+    // Cas test 1D, diffu et 2D
     return 1.;
 
     // Cas test lambda non constant
@@ -52,10 +52,7 @@ double Datafile::Lambda_harm(double Tplus, double Tmoins)
 // Definition de la donnée initiale
 double Datafile::SolInit(double x, double y)
 {
-    // Validation du schéma
-    // return 1.;
-
-    // Validation de lambda(T(x)) non constant
+    // Validation code 1D, lambda(T(x)) non constant et diffu
     // return 0.;
 
     // Validation code 2D
@@ -64,18 +61,22 @@ double Datafile::SolInit(double x, double y)
 
 double Datafile::SolExact(double t, double x, double y)
 {
-    // Validation du schéma
+    // Validation code 1D
     // return y;
 
     // Validation de lambda(T(x)) non constant
     // return -1./2. + sqrt(1+8*y)/2.;
 
+    // Validation code diffu
+    // return 1-y;
+
     // Validation code 2D
     return sin(2*pi*x/(_xmax-_xmin))*sin(2*pi*y/(_ymax-_ymin))*exp(-8*pi*pi*t/(_xmax-_xmin)/(_ymax-_ymin));
 }
 
-double Datafile::Source_term(double T)
+double Datafile::Source_term(double x, double y, double t)
 {
+    // Validation cas test
     return 0;
 }
 

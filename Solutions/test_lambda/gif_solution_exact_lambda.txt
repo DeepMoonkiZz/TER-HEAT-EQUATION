@@ -1,0 +1,29 @@
+#Définition du terminal de sortie
+set term png
+
+# Définition des bornes de l'échelle de couleur
+set cbrange [0:1]
+
+# Définition de l'échelle constante pour les axes
+set autoscale fix
+
+# Nombre total de fichiers
+n_files = 1001
+
+# Pas de temps initial et final
+t0 = 0.000
+tfinal = 1.000
+
+# Pas de temps entre chaque fichier
+dt = (tfinal - t0) / (n_files - 1)
+
+pause 1 
+# Boucle sur les indices de pas de temps
+do for [i=0:n_files-1] {
+    t = t0 + i*dt
+    file_name = sprintf("exact_lambda/exact_lambda_%.3f.dat", t)
+    output_name = sprintf("exact_lambda/exact_lambda_%.3f.png", t)
+    set output output_name
+    set title "t = ".sprintf("%.3f", t)." s"
+    plot file_name u 1:2:3 with image
+}

@@ -54,8 +54,8 @@ class Datafile
         double SolInit(double x, double y);
         // Definition de la solution exacte a l'instant t et au point x
         double SolExact(double t, double x, double y);
-        // Definition du terme source en fonction de T
-        double Source_term(double T);
+        // Definition du terme source en fonction de x, y, t
+        double Source_term(double x, double y, double t);
         // recuperer le nombre de maille en x
         int GetNX() {return _nx;};
         // recuperer le nombre de maille en y

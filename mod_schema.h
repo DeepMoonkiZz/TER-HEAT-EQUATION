@@ -39,9 +39,9 @@ class Schema
         // Construction de A
         void Build_A_and_b();
         // Construction des flux F
-        void Flux_F(int i, int j, double Cx, string CL);
+        void Flux_F(int i, int j, double Cx, string CLO, string CLE);
         // Construction des flux G
-        void Flux_G(int i, int j, double Cy, string CL);
+        void Flux_G(int i, int j, double Cy, string CLS, string CLN);
         // Coordonnée du plan vers le vecteur 
         Vector2i Coord_vect_to_mat(int N);
         // Coordonnée du vecteur vers le plan 

@@ -53,9 +53,9 @@ void Schema::Build_A_and_b()
 			// Tij en n+1
 			_triplets.push_back({Coord_mat_to_vect(i, j), Coord_mat_to_vect(i, j), 1});
 			// Flux F en i
-			this->Flux_F(i, j, C / (_df->GetDeltaX() * _df->GetDeltaX()), diri); // neu pour le cas 1D et diri pour cas lambda non constant et 2D
+			this->Flux_F(i, j, C / (_df->GetDeltaX() * _df->GetDeltaX()), diri, diri); // neu pour les cas 1D et diffu et diri pour les cas lambda non constant et 2D [CL->ouest | CL->est]
 			// Flux G en j
-			this->Flux_G(i, j, C / (_df->GetDeltaY() * _df->GetDeltaY()), diri); // diri pour tout les cas
+			this->Flux_G(i, j, C / (_df->GetDeltaY() * _df->GetDeltaY()), diri, diri); // diri pour tout les cas [CL->sud | CL->nord] sauf diffu neu nord
 		}
 	}
 	_A.setFromTriplets(_triplets.begin(), _triplets.end());
@@ -64,13 +64,13 @@ void Schema::Build_A_and_b()
 	// Build b
 	for (int i=0; i < _nx; i++) {
     	for (int j=0; j < _ny; j++) {
-            _b(Coord_mat_to_vect(i, j)) += _df->Source_term(_Tn(Coord_mat_to_vect(i, j)));
+            _b(Coord_mat_to_vect(i, j)) += _df->GetDeltaT() / (_df->GetRho() * _df->Cp(0))*_df->Source_term(_df->GetXmin()+i*_df->GetDeltaX(), _df->GetYmin()+i*_df->GetDeltaY(), _t);
         }
     }
 }
 
 
-void Schema::Flux_F(int i, int j, double Cx, string CL)
+void Schema::Flux_F(int i, int j, double Cx, string CLouest, string CLest)
 {
 	double Tij, Timj, Tipj;
 	double CLe, CLo;
@@ -85,9 +85,9 @@ void Schema::Flux_F(int i, int j, double Cx, string CL)
 	if (i==0) {
 		Tij = _Tn(Coord_ij);
 		Tipj = _Tn(Coord_ipj);
-		CLo = _df->CL_ouest(_t, _df->GetYmin() + j * _df->GetDeltaY(), CL);
+		CLo = _df->CL_ouest(_t, _df->GetYmin() + j * _df->GetDeltaY(), CLouest);
 
-		if (CL=="diriclet") {
+		if (CLouest=="diriclet") {
 			// Condition limite
 			_b(Coord_ij) += Cx * _df->Lambda_harm(Tij, CLo) * CLo;
 
@@ -96,7 +96,7 @@ void Schema::Flux_F(int i, int j, double Cx, string CL)
 			_triplets.push_back({Coord_ij, Coord_ij, Cx * _df->Lambda_harm(Tij, Tipj)});
 			_triplets.push_back({Coord_ij, Coord_ipj, - Cx * _df->Lambda_harm(Tij, Tipj)});
 		}
-		else if (CL=="neumann") {
+		else if (CLouest=="neumann") {
 			// Condition limite
 			_b(Coord_ij) += _df->GetDeltaX() * Cx * _df->Lambda_harm(Tij, CLo) * CLo;
 
@@ -110,9 +110,9 @@ void Schema::Flux_F(int i, int j, double Cx, string CL)
 	else if (i==_nx-1) {
 		Tij = _Tn(Coord_ij);
 		Timj = _Tn(Coord_imj);
-		CLe = _df->CL_est(_t, _df->GetYmin() + j * _df->GetDeltaY(), CL);
+		CLe = _df->CL_est(_t, _df->GetYmin() + j * _df->GetDeltaY(), CLest);
 
-		if (CL=="diriclet") {
+		if (CLest=="diriclet") {
 			// Condition limite
 			_b(Coord_ij) += Cx * _df->Lambda_harm(CLe, Tij) * CLe;
 
@@ -121,7 +121,7 @@ void Schema::Flux_F(int i, int j, double Cx, string CL)
 			_triplets.push_back({Coord_ij, Coord_ij, Cx * _df->Lambda_harm(Tij, Timj)});
 			_triplets.push_back({Coord_ij, Coord_imj, - Cx * _df->Lambda_harm(Tij, Timj)});
 		}
-		else if (CL=="neumann") {
+		else if (CLest=="neumann") {
 			// Condition limite
 			_b(Coord_ij) += _df->GetDeltaX() * Cx * _df->Lambda_harm(CLe, Tij) * CLe;
 
@@ -145,7 +145,7 @@ void Schema::Flux_F(int i, int j, double Cx, string CL)
 }
 
 
-void Schema::Flux_G(int i, int j, double Cy, string CL)
+void Schema::Flux_G(int i, int j, double Cy, string CLsud, string CLnord)
 {
 	double Tij, Tijm, Tijp;
 	double CLn, CLs;
@@ -159,9 +159,9 @@ void Schema::Flux_G(int i, int j, double Cy, string CL)
 	if (j==0) {
 		Tij = _Tn(Coord_ij);
 		Tijp = _Tn(Coord_ijp);
-		CLs = _df->CL_sud(_t, _df->GetXmin() + i * _df->GetDeltaX(), CL);
+		CLs = _df->CL_sud(_t, _df->GetXmin() + i * _df->GetDeltaX(), CLsud);
 
-		if (CL=="diriclet") {
+		if (CLsud=="diriclet") {
 			// Condition limite
 			_b(Coord_ij) += Cy * _df->Lambda_harm(Tij, CLs) * CLs;
 
@@ -170,7 +170,7 @@ void Schema::Flux_G(int i, int j, double Cy, string CL)
 			_triplets.push_back({Coord_ij, Coord_ij, Cy * _df->Lambda_harm(Tij, Tijp)});
 			_triplets.push_back({Coord_ij, Coord_ijp, - Cy * _df->Lambda_harm(Tij, Tijp)});
 		}
-		else if (CL=="neumann") {
+		else if (CLsud=="neumann") {
 			// Condition limite
 			_b(Coord_ij) += _df->GetDeltaY() * Cy * _df->Lambda_harm(Tij, CLs) * CLs;
 
@@ -184,9 +184,9 @@ void Schema::Flux_G(int i, int j, double Cy, string CL)
 	else if (j==_ny-1) {	
 		Tij = _Tn(Coord_ij);
 		Tijm = _Tn(Coord_ijm);
-		CLn = _df->CL_nord(_t, _df->GetXmin() + i * _df->GetDeltaX(), CL);
+		CLn = _df->CL_nord(_t, _df->GetXmin() + i * _df->GetDeltaX(), CLnord);
 
-		if (CL=="diriclet") {
+		if (CLnord=="diriclet") {
 			// Condition limite
 			_b(Coord_ij) += Cy * _df->Lambda_harm(CLn, Tij) * CLn;
 
@@ -195,7 +195,7 @@ void Schema::Flux_G(int i, int j, double Cy, string CL)
 			_triplets.push_back({Coord_ij, Coord_ij, Cy * _df->Lambda_harm(Tij, Tijm)});
 			_triplets.push_back({Coord_ij, Coord_ijm, - Cy * _df->Lambda_harm(Tij, Tijm)});
 		}
-		else if (CL=="neumann") {
+		else if (CLnord=="neumann") {
 			// Condition limite
 			_b(Coord_ij) += _df->GetDeltaY() * Cy * _df->Lambda_harm(CLn, Tij) * CLn;
 
