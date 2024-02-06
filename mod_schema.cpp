@@ -53,9 +53,9 @@ void Schema::Build_A_and_b()
 			// Tij en n+1
 			_triplets.push_back({Coord_mat_to_vect(i, j), Coord_mat_to_vect(i, j), 1});
 			// Flux F en i
-			this->Flux_F(i, j, C / (_df->GetDeltaX() * _df->GetDeltaX()), diri, diri); // neu pour les cas 1D et diffu et diri pour les cas lambda non constant et 2D [CL->ouest | CL->est]
+			this->Flux_F(i, j, C / (_df->GetDeltaX() * _df->GetDeltaX()), neu, diri); // neu pour les cas 1D et diffu et diri pour les cas lambda non constant et 2D [CL->ouest | CL->est]
 			// Flux G en j
-			this->Flux_G(i, j, C / (_df->GetDeltaY() * _df->GetDeltaY()), diri, diri); // diri pour tout les cas [CL->sud | CL->nord] sauf diffu neu nord
+			this->Flux_G(i, j, C / (_df->GetDeltaY() * _df->GetDeltaY()), diri, neu); // diri pour tout les cas [CL->sud | CL->nord] sauf diffu neu nord
 		}
 	}
 	_A.setFromTriplets(_triplets.begin(), _triplets.end());

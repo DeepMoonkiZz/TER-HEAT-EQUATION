@@ -71,13 +71,16 @@ double Datafile::SolExact(double t, double x, double y)
     // return 1-y;
 
     // Validation code 2D
-    return sin(2*pi*x/(_xmax-_xmin))*sin(2*pi*y/(_ymax-_ymin))*exp(-8*pi*pi*t/(_xmax-_xmin)/(_ymax-_ymin));
+    // return sin(2*pi*x/(_xmax-_xmin))*sin(2*pi*y/(_ymax-_ymin))*exp(-8*pi*pi*t/(_xmax-_xmin)/(_ymax-_ymin));
+
+    return cos(3.*pi*x)*(y-(1-1)/4.)/(t+1.);
+
 }
 
 double Datafile::Source_term(double x, double y, double t)
 {
     // Validation cas test
-    return 0;
+    return -cos(3*pi*x)/pow(t+1.,2)*(y-(-1+1)/4)+9*0.1*pow(pi,2)*cos(3*pi*x)*(y-(-1+1)/4)/(t+1.);
 }
 
 // Definition de T ouest(t)
@@ -85,7 +88,7 @@ double Datafile::CL_ouest(double t, double y, string CL)
 {
     if (CL=="neumann")
     {
-        return 0.;
+        return -3*pi*sin(3.*pi*0)*(y-(-1+1)/4.)/(t+1.0);
     }
     else if (CL=="diriclet")
     {
@@ -139,7 +142,7 @@ double Datafile::CL_nord(double t, double x, string CL)
 {
     if (CL=="neumann")
     {
-        return 0.;
+        return cos(3.*pi*x)/(t+1.0);
     }
     else if (CL=="diriclet")
     {
